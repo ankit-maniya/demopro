@@ -37,6 +37,8 @@ const Organization = (props) => {
 				pathname: '/dashboard',
 				data: selectedOrg?.cId, // your data array of objects
             });    
+
+            localStorage.setItem('orgId', selectedOrg?.cId);
 		}
 	};
 

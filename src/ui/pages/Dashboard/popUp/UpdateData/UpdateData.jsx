@@ -36,6 +36,11 @@ const AddData = (props) => {
 		if (props?.showModal) {
 			setModal(props?.showModal);
 		}
+
+		if (props?.updateData && props?.updateData !== '') {
+            setName(props?.updateData?.name);
+            setContact(props?.updateData?.contact);
+		}
 	}, [props]);
 
 	
@@ -46,12 +51,12 @@ const AddData = (props) => {
 		if (!form.checkValidity()) {
 			e.stopPrapogation();
 		} else {
-			api.post(
-				'/party/',
+
+			api.put(
+				'/party/'+props?.updateData?._id,
 				{
 					name: name,
 					contact: contact,
-					orgId: orgId,
 				},
 				{
 					withCredentials: true,
@@ -70,7 +75,7 @@ const AddData = (props) => {
 	return (
 		<div>
 			<Modal isOpen={modal} toggle={toggle} className={className}>
-				<ModalHeader toggle={toggle}>Add Data</ModalHeader>
+				<ModalHeader toggle={toggle}>Update Data</ModalHeader>
 				<ModalBody>
 					<Form
 						onSubmit={(e) => {
@@ -110,7 +115,7 @@ const AddData = (props) => {
 							</Col>
 						</Row>
 
-						<Button color="primary">Submit</Button>
+						<Button color="warning">Update</Button>
 					</Form>
 				</ModalBody>
 				<ModalFooter>
