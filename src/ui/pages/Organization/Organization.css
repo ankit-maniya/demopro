@@ -1,0 +1,11 @@
+.d-full {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.d-btn{
+    margin-top: 10%;
+}
