@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+
 import {
 	Button,
 	Modal,
@@ -15,6 +17,11 @@ import {
 import axios from 'axios';
 
 const AddData = (props) => {
+    
+    const showToast = () => {
+		toast.success('Added Successfully!');
+	};
+
 	const { buttonLabel, className } = props;
 
 	const orgId = localStorage.getItem('orgId') ? localStorage.getItem('orgId') : '';
@@ -38,8 +45,6 @@ const AddData = (props) => {
 		}
 	}, [props]);
 
-	
-
 	const onSubmit = (e) => {
 		e.preventDefault();
 		const form = e.currentTarget;
@@ -59,8 +64,10 @@ const AddData = (props) => {
 				}
 			)
 				.then(function (response) {
+                    props.GetData();
+                    showToast();
 					console.log('========>>>>>>>>>>>>>>>', response);
-					window.location.reload();
+					// window.location.reload();
 				})
 				.catch(function (error) {
 					console.log(error);
@@ -101,7 +108,9 @@ const AddData = (props) => {
 										name="text"
 										id="contact"
 										placeholder="Enter Contact"
-										value={contact}
+                                        value={contact}
+                                        minLength={10}
+                                        maxLength={13}
 										onChange={(e) => {
 											setContact(e.target.value);
 										}}

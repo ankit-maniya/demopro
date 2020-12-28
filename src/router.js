@@ -4,6 +4,7 @@ import Login from './ui/pages/Login/Login';
 import Signup from './ui/pages/Signup/Signup';
 import Dashboard from './ui/pages/Dashboard/Dashboard';
 import Organization from './ui/pages/Organization/Organization';
+import { ToastContainer } from 'react-toastify';
 
 export default class AppRouter extends Component {
 	constructor(props) {
@@ -20,6 +21,7 @@ export default class AppRouter extends Component {
                     <UserRoute exact path="/dashboard" component={Dashboard} />
                     <UserRoute exact path="/organization" component={Organization} />
 				</Switch>
+                <ToastContainer />
 			</Router>
 		);
 	}
