@@ -67,9 +67,11 @@ const AddData = (props) => {
     function handleChange(i, event) {
         
         const values = [...fields];
-        console.log("handle change event =====",event.target.value);
+        console.log("handle change event =====",event.target);
         values[i].name = event.target.name;
         values[i].contact = event.target.contact;
+        console.log("handlechnage-----",values);
+        
         setFields(values);
     }
 
@@ -134,7 +136,7 @@ const AddData = (props) => {
 							? fields?.length > 0
 								? fields?.map((field,idx) => {
 										return (
-											<Inputs key={`${field}-${idx}`} name={field.name} contect={field.contact} idx={idx} handleChange={(e)=>handleChange(idx,e)} handleRemove={()=>{handleRemove(idx)}}/>
+											<Inputs key={`${field}-${idx}`} field = {field} idx={idx} handleChange={(idx,e)=>handleChange(idx,e)} handleRemove={()=>{handleRemove(idx)}}/>
 										);
 								  })
 								: null

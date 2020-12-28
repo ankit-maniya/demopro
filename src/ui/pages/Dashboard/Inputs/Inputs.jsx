@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Row, Col, FormGroup, Label, Input, Button } from 'reactstrap';
 
 const Inputs = (props) => {
+
+    console.log("Fields  jbj",props.field);
+    
+
 	return (
 		<Row form className="formInputs">
 			<Col md={2} className="m-auto justify-content-center text-center">
@@ -17,7 +21,7 @@ const Inputs = (props) => {
 						name="name"
 						id="name"
 						placeholder="Enter Name"
-						value={props.name}
+						value={props.field.name}
 						onChange={(e) => props.handleChange(props.idx, e)}
 					/>
 				</FormGroup>
@@ -30,7 +34,7 @@ const Inputs = (props) => {
 						name="contact"
 						id="contact"
 						placeholder="Enter Contact"
-						value={props.contact}
+						value={props.field.contact}
 						minLength={10}
 						maxLength={13}
 						onChange={(e) => props.handleChange(props.idx, e)}
