@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+
 import {
 	Button,
 	Modal,
@@ -14,10 +16,12 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 
-const AddData = (props) => {
-	const { buttonLabel, className } = props;
-
-	const orgId = localStorage.getItem('orgId') ? localStorage.getItem('orgId') : '';
+const UpdateData = (props) => {
+    const  showToast = () => {
+		toast.success('Updated Successfully!');
+	};
+    
+	const {className } = props;
 
 	const [modal, setModal] = useState(false);
 	const [name, setName] = useState('');
@@ -33,10 +37,10 @@ const AddData = (props) => {
 	});
 
 	useEffect(() => {
+        console.log('----Update Data-----',props);
 		if (props?.showModal) {
 			setModal(props?.showModal);
 		}
-
 		if (props?.updateData && props?.updateData !== '') {
             setName(props?.updateData?.name);
             setContact(props?.updateData?.contact);
@@ -46,7 +50,8 @@ const AddData = (props) => {
 	
 
 	const onSubmit = (e) => {
-		e.preventDefault();
+        e.preventDefault();
+        toggle();
 		const form = e.currentTarget;
 		if (!form.checkValidity()) {
 			e.stopPrapogation();
@@ -64,8 +69,9 @@ const AddData = (props) => {
 				}
 			)
 				.then(function (response) {
-					console.log('========>>>>>>>>>>>>>>>', response);
-					window.location.reload();
+                    console.log('========>>>>>>>>>>>>>>>', response);  
+                    showToast() 
+                    props.GetData();
 				})
 				.catch(function (error) {
 					console.log(error);
@@ -115,7 +121,7 @@ const AddData = (props) => {
 							</Col>
 						</Row>
 
-						<Button color="warning">Update</Button>
+						<Button color="warning" >Update</Button>
 					</Form>
 				</ModalBody>
 				<ModalFooter>
@@ -128,4 +134,4 @@ const AddData = (props) => {
 	);
 };
 
-export default AddData;
+export default UpdateData;

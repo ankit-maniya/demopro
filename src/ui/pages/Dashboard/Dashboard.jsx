@@ -121,7 +121,7 @@ const Dashboard = (props) => {
 				</tbody>
 			</Table>
 			<AddData showModal={modal} setToggle={() => setModal(false)} GetData={() => GetData(orgId)} />
-			<UpdateData updateData={upData} showModal={modal2} setToggle={() => setModal2(false)} />
+			<UpdateData updateData={upData} showModal={modal2} setToggle={() => setModal2(false)} GetData={()=>GetData(orgId)} />
 		</div>
 	);
 };

@@ -15,22 +15,38 @@ import {
 	Input,
 } from 'reactstrap';
 import axios from 'axios';
+import Inputs from '../../Inputs/Inputs';
 
 const AddData = (props) => {
+	const [inputs, addInputs] = useState([{ value: null }]);
+    console.log(inputs);
     
-    const showToast = () => {
+    function updateInputsArray(index, newValue) {
+        //copy the array first
+       const updatedArray = [...inputs];
+       updatedArray[index] = newValue;
+       addInputs({
+            inputs: updatedArray,
+        });
+    }
+
+    const addOne = () => {
+        
+    }
+
+	const showToast = () => {
 		toast.success('Added Successfully!');
 	};
 
-	const { buttonLabel, className } = props;
+	const { className } = props;
 
 	const orgId = localStorage.getItem('orgId') ? localStorage.getItem('orgId') : '';
 
 	const [modal, setModal] = useState(false);
 	const [name, setName] = useState('');
-    const [contact, setContact] = useState('');
-    
-    const toggle = () => {
+	const [contact, setContact] = useState('');
+
+	const toggle = () => {
 		setModal(!modal);
 		props?.setToggle(false);
 	};
@@ -45,33 +61,62 @@ const AddData = (props) => {
 		}
 	}, [props]);
 
+
+    const [fields, setFields] = useState([{ name: "" ,contact:""}]);
+
+    function handleChange(i, event) {
+        
+        const values = [...fields];
+        console.log("handle change event =====",event.target.value);
+        values[i].name = event.target.name;
+        values[i].contact = event.target.contact;
+        setFields(values);
+    }
+
+    function handleAdd() {
+        const values = [...fields];
+        values.push({ name: "" ,contact:""});
+        setFields(values);
+    }
+
+    function handleRemove(i) {
+        const values = [...fields];
+        values.splice(i, 1);
+        setFields(values);
+    }
+
 	const onSubmit = (e) => {
 		e.preventDefault();
 		const form = e.currentTarget;
 		if (!form.checkValidity()) {
 			e.stopPrapogation();
 		} else {
-			api.post(
-				'/party/',
-				{
-					name: name,
-					contact: contact,
-					orgId: orgId,
-				},
-				{
-					withCredentials: true,
-					headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
-				}
-			)
-				.then(function (response) {
-                    props.GetData();
-                    showToast();
-					console.log('========>>>>>>>>>>>>>>>', response);
-					// window.location.reload();
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
+            
+            
+
+			// api.post(
+			// 	'/party/',
+			// 	{
+			// 		name: name,
+			// 		contact: contact,
+			// 		orgId: orgId,
+			// 	},
+			// 	{
+			// 		withCredentials: true,
+			// 		headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+			// 	}
+			// )
+			// 	.then(function (response) {
+			// 		props.GetData();
+			// 		showToast();
+			// 		console.log('========>>>>>>>>>>>>>>>', response);
+			// 		// window.location.reload();
+			// 	})
+			// 	.catch(function (error) {
+			// 		console.log(error);
+			// 	});
+
+			toggle();
 		}
 	};
 	return (
@@ -79,45 +124,21 @@ const AddData = (props) => {
 			<Modal isOpen={modal} toggle={toggle} className={className}>
 				<ModalHeader toggle={toggle}>Add Data</ModalHeader>
 				<ModalBody>
+					<Button color="success" onClick={() => handleAdd()}>Add More +</Button>
 					<Form
 						onSubmit={(e) => {
 							onSubmit(e);
 						}}
 					>
-						<Row form>
-							<Col md={6}>
-								<FormGroup>
-									<Label for="name">Party Name</Label>
-									<Input
-										type="text"
-										name="text"
-										id="name"
-										placeholder="Enter Name"
-										value={name}
-										onChange={(e) => {
-											setName(e.target.value);
-										}}
-									/>
-								</FormGroup>
-							</Col>
-							<Col md={6}>
-								<FormGroup>
-									<Label for="contact">Contact No</Label>
-									<Input
-										type="text"
-										name="text"
-										id="contact"
-										placeholder="Enter Contact"
-                                        value={contact}
-                                        minLength={10}
-                                        maxLength={13}
-										onChange={(e) => {
-											setContact(e.target.value);
-										}}
-									/>
-								</FormGroup>
-							</Col>
-						</Row>
+						{fields
+							? fields?.length > 0
+								? fields?.map((field,idx) => {
+										return (
+											<Inputs key={`${field}-${idx}`} name={field.name} contect={field.contact} idx={idx} handleChange={(e)=>handleChange(idx,e)} handleRemove={()=>{handleRemove(idx)}}/>
+										);
+								  })
+								: null
+							: ''}
 
 						<Button color="primary">Submit</Button>
 					</Form>
