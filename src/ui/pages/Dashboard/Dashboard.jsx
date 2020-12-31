@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Row, Col } from 'reactstrap';
+import {
+	Table,
+	Button,
+	Row,
+	Col,
+	ButtonDropdown,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem,
+	Label,
+	Input,
+	FormGroup,
+} from 'reactstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import AddData from './popUp/AddData/AddData';
+import Demo from './popUp/Demo/Demo';
 import UpdateData from './popUp/UpdateData/UpdateData';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,6 +28,9 @@ const Dashboard = (props) => {
 		toast.success('Deleted Successfully!');
 	};
 	const [modal, setModal] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
+	const [isBatch, setIsBatch] = useState([]);
+	const [checklist, setCheckList] = useState(0);
 	const [modal2, setModal2] = useState(false);
 	const [alldata, setAllData] = useState('');
 	const [upData, setUpdata] = useState('');
@@ -57,6 +73,48 @@ const Dashboard = (props) => {
 				// showToast();
 			});
 	};
+
+	const RemoveBetchData = () => {
+		api.post(
+			'party/isBatchDelete/',
+			{
+				deleteBatch: isBatch,
+			},
+			{ withCredentials: true }
+		)
+			.then(function (response) {
+                // handle success
+                setCheckList(0)
+				showToast();
+				GetData(orgId);
+				// showToast();
+			})
+			.catch(function (error) {
+				// handle error
+				showToast();
+				console.log(error);
+				// showToast();
+            });
+            
+	};
+
+	const _handleChange = (e, id) => {
+		var value = isBatch;
+		if (e.target.checked) {
+            value.push(id);
+            setCheckList(checklist+1);
+		} else if (!e.target.checked) {
+            value.splice(id, 1);
+            setCheckList(checklist-1);
+            
+		}
+		setIsBatch(value);
+	};
+
+	const toggle = () => {
+		setIsOpen(!isOpen);
+	};
+
 	return (
 		<div style={{ flex: 1 }}>
 			<Row style={{ margin: 0 }}>
@@ -65,14 +123,26 @@ const Dashboard = (props) => {
 						Add
 					</Button>
 				</Col>
-				<Col xs="9" className="m-auto justify-content-center text-center">
-					<h3>Party Table</h3>
+				<Col xs="7" className="m-auto justify-content-center text-center">
+					<h2>Party Table</h2>
+				</Col>
+				<Col xs="2" className="m-auto justify-content-center text-center">
+					<ButtonDropdown isOpen={isOpen} toggle={toggle}>
+						<Button id="caret" color="primary">
+							{checklist ? checklist : 'Operations'}
+						</Button>
+						<DropdownToggle split color="primary" />
+						<DropdownMenu>
+							<DropdownItem onClick={()=>{RemoveBetchData()}}>Delete Batch</DropdownItem>
+							<DropdownItem>Edit Batch</DropdownItem>
+						</DropdownMenu>
+					</ButtonDropdown>
 				</Col>
 			</Row>
 			<Table hover responsive>
 				<thead>
 					<tr>
-						<th>#</th>
+						<th>Id</th>
 						<th>Party Name</th>
 						<th>Contact</th>
 						{/* <th>Username</th> */}
@@ -85,8 +155,20 @@ const Dashboard = (props) => {
 						? alldata?.length > 0 &&
 						  alldata.map((data, key) => {
 								return (
-									<tr key={key}>
-										<th scope="row">{key + 1}</th>
+									<tr key={data._id}>
+										<th scope="row">
+											<FormGroup check>
+												<Label check>
+													<Input
+														type="checkbox"
+														onChange={(e) => {
+															_handleChange(e, data._id);
+														}}
+													/>
+													{key + 1}
+												</Label>
+											</FormGroup>
+										</th>
 										<td>{data.name}</td>
 										<td>{data.contact}</td>
 										{/* <td>{data.contact}</td> */}
@@ -120,8 +202,14 @@ const Dashboard = (props) => {
 						: null}
 				</tbody>
 			</Table>
-			<AddData showModal={modal} setToggle={() => setModal(false)} GetData={() => GetData(orgId)} />
-			<UpdateData updateData={upData} showModal={modal2} setToggle={() => setModal2(false)} GetData={()=>GetData(orgId)} />
+			{/* <AddData showModal={modal} setToggle={() => setModal(false)} GetData={() => GetData(orgId)} /> */}
+			<Demo showModal={modal} setToggle={() => setModal(false)} GetData={() => GetData(orgId)} />
+			<UpdateData
+				updateData={upData}
+				showModal={modal2}
+				setToggle={() => setModal2(false)}
+				GetData={() => GetData(orgId)}
+			/>
 		</div>
 	);
 };

@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import { Row, Col, FormGroup, Label, Input, Button } from 'reactstrap';
 
 const Inputs = (props) => {
-
-    console.log("Fields  jbj",props.field);
-    
-
 	return (
 		<Row form className="formInputs">
 			<Col md={2} className="m-auto justify-content-center text-center">
