@@ -24,17 +24,28 @@ const api = axios.create({
 });
 
 const Dashboard = (props) => {
-	const showToast = () => {
-		toast.success('Deleted Successfully!');
-	};
 	const [modal, setModal] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isBatch, setIsBatch] = useState([]);
+	const [isBatchUpdate, setIsBatchUpdate] = useState([]);
 	const [checklist, setCheckList] = useState(0);
 	const [modal2, setModal2] = useState(false);
 	const [alldata, setAllData] = useState('');
 	const [upData, setUpdata] = useState('');
 	const [delId, setDelId] = useState('');
+
+	const showToast = (msg = '') => {
+		var msgExternal = '';
+		if (msg !== '') {
+			msgExternal = msg;
+		} else {
+			msgExternal = 'Deleted Successfully!';
+		}
+		// var msgExternal = 'Deleted Successfully!';
+		console.log('---------', msgExternal);
+
+		toast.success(msgExternal);
+	};
 
 	const orgId = localStorage.getItem('orgId') ? localStorage.getItem('orgId') : '';
 	useEffect(() => {
@@ -83,8 +94,8 @@ const Dashboard = (props) => {
 			{ withCredentials: true }
 		)
 			.then(function (response) {
-                // handle success
-                setCheckList(0)
+				// handle success
+				setCheckList(0);
 				showToast();
 				GetData(orgId);
 				// showToast();
@@ -94,20 +105,21 @@ const Dashboard = (props) => {
 				showToast();
 				console.log(error);
 				// showToast();
-            });
-            
+			});
 	};
 
-	const _handleChange = (e, id) => {
+	const _handleChange = (e, data) => {
 		var value = isBatch;
 		if (e.target.checked) {
-            value.push(id);
-            setCheckList(checklist+1);
+			value.push(data._id);
+			isBatchUpdate.push(data);
+			setCheckList(checklist + 1);
 		} else if (!e.target.checked) {
-            value.splice(id, 1);
-            setCheckList(checklist-1);
-            
+			value.splice(data._id, 1);
+			isBatchUpdate.splice(data, 1);
+			setCheckList(checklist - 1);
 		}
+
 		setIsBatch(value);
 	};
 
@@ -119,7 +131,15 @@ const Dashboard = (props) => {
 		<div style={{ flex: 1 }}>
 			<Row style={{ margin: 0 }}>
 				<Col xs="3">
-					<Button className="m-1" color="primary" onClick={() => setModal(true)} outline size="sm">
+					<Button
+						className="m-1"
+						color="primary"
+						onClick={() => {
+                            setModal(true);
+						}}
+						outline
+						size="sm"
+					>
 						Add
 					</Button>
 				</Col>
@@ -133,8 +153,24 @@ const Dashboard = (props) => {
 						</Button>
 						<DropdownToggle split color="primary" />
 						<DropdownMenu>
-							<DropdownItem onClick={()=>{RemoveBetchData()}}>Delete Batch</DropdownItem>
-							<DropdownItem>Edit Batch</DropdownItem>
+							<DropdownItem
+								onClick={() => {
+									RemoveBetchData();
+								}}
+							>
+								Delete Batch
+							</DropdownItem>
+							<DropdownItem
+								onClick={() => {
+									if (checklist !== 0) {
+										setModal(true);
+									} else {
+										showToast('Please Select Fields First');
+									}
+								}}
+							>
+								Edit Batch
+							</DropdownItem>
 						</DropdownMenu>
 					</ButtonDropdown>
 				</Col>
@@ -162,7 +198,7 @@ const Dashboard = (props) => {
 													<Input
 														type="checkbox"
 														onChange={(e) => {
-															_handleChange(e, data._id);
+															_handleChange(e, data);
 														}}
 													/>
 													{key + 1}
@@ -202,9 +238,15 @@ const Dashboard = (props) => {
 						: null}
 				</tbody>
 			</Table>
-			{/* <AddData showModal={modal} setToggle={() => setModal(false)} GetData={() => GetData(orgId)} /> */}
-			<Demo showModal={modal} setToggle={() => setModal(false)} GetData={() => GetData(orgId)} />
+			<AddData
+				updateBetchData={isBatchUpdate}
+				showModal={modal}
+				setToggle={() => setModal(false)}
+				GetData={() => GetData(orgId)}
+			/>
+			{/* <Demo showModal={modal} setToggle={() => setModal(false)} GetData={() => GetData(orgId)} /> */}
 			<UpdateData
+				setCheckList={() => setCheckList()}
 				updateData={upData}
 				showModal={modal2}
 				setToggle={() => setModal2(false)}

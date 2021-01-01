@@ -15,7 +15,6 @@ import {
 	Input,
 } from 'reactstrap';
 import axios from 'axios';
-import Inputs from '../../Inputs/Inputs';
 
 const AddData = (props) => {
 	const [inputFields, addinputFields] = useState([{ name: '', contact: '' }]);
@@ -30,8 +29,6 @@ const AddData = (props) => {
 	const orgId = localStorage.getItem('orgId') ? localStorage.getItem('orgId') : '';
 
 	const [modal, setModal] = useState(false);
-	const [name, setName] = useState('');
-	const [contact, setContact] = useState('');
 
 	const toggle = () => {
 		setModal(!modal);
@@ -54,8 +51,6 @@ const AddData = (props) => {
 		if (!form.checkValidity()) {
 			e.stopPrapogation();
 		} else {
-			console.log('data----<<>>>>>', inputFields);
-
 			api.post(
 				'/party/',
 				{
@@ -70,15 +65,13 @@ const AddData = (props) => {
 				.then(function (response) {
 					props.GetData();
 					showToast();
-					console.log('========>>>>>>>>>>>>>>>', response);
-					// window.location.reload();
 				})
 				.catch(function (error) {
 					console.log(error);
 				});
 
-            toggle();
-            emptyFields();
+			toggle();
+			emptyFields();
 		}
 	};
 
@@ -96,16 +89,15 @@ const AddData = (props) => {
 	};
 
 	const handleRemoveField = (index) => {
-		console.log('remover index-------<<<<<<-----', index);
 		const newFields = [...inputFields];
 		newFields.splice(index, 1);
 		addinputFields(newFields);
-    };
-    
-    const emptyFields = () => {
-        addinputFields([{ name: '', contact: '' }])
-    }
- 
+	};
+
+	const emptyFields = () => {
+		addinputFields([{ name: '', contact: '' }]);
+	};
+
 	return (
 		<div>
 			<Modal isOpen={modal} toggle={toggle} className={className}>
